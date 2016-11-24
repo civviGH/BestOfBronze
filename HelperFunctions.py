@@ -32,7 +32,7 @@ def checkForHighElo():
   content = SummonerList.readlines()
   SummonerList.seek(0)
   for line in content:
-    if line[line.find(",")+1:] == "B5\r\n" or  line[line.find(",")+1:] == "B4\r\n":
+    if line[line.find(",")+1:] == "B5\n" or  line[line.find(",")+1:] == "B4\n":
       SummonerList.write(line)
   SummonerList.truncate()
   SummonerList.close()

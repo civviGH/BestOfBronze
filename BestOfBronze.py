@@ -6,8 +6,8 @@ from time import sleep
 summonerList = []
 with open("SummonerList.txt", "r") as SL:
   for line in SL:
-    # line[:-2] cuts out the \r\n appendix
-    summonerList.append(line[:-2])
+    # line[:-1] cuts out the \n appendix
+    summonerList.append(line[:-1])
 
 # shuffe the list to randomize search order
 random.shuffle(summonerList)
