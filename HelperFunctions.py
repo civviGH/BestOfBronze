@@ -1,3 +1,8 @@
+import requests
+import config
+import requests.packages.urllib3
+requests.packages.urllib3.disable_warnings()
+
 def addSummonerToList(summonerId, tier):
   with open("SummonerList.txt", "a") as SummonerList:
     SummonerList.write(str(summonerId) + "," + tier + "\r\n")
@@ -31,3 +36,11 @@ def checkForHighElo():
       SummonerList.write(line)
   SummonerList.truncate()
   SummonerList.close()
+
+def checkIfIngame(summonerId):
+  response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/36728651?api_key=" + config.static["api-key"]) 
+  if (response.status_code == 503):
+    print("Riot API failed to respond")
+  if response.status_code == 200:
+    return True
+  return False
