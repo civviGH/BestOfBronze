@@ -1,5 +1,6 @@
 import requests
 import config
+import json
 import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 
@@ -39,8 +40,19 @@ def checkForHighElo():
 
 def checkIfIngame(summonerId):
   response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/36728651?api_key=" + config.static["api-key"]) 
+  print(response.status_code)
   if (response.status_code == 503):
-    print("Riot API failed to respond")
+    print("Cant check if ingame, return code is 503")
   if response.status_code == 200:
-    return True
+    content = json.loads(response.text)
+    if content["gameQueueConfigId"] in config.static["ranked-queues"]:
+      return True
+  return False
+
+def giveGameData(summonerId):
+  response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/36728651?api_key=" + config.static["api-key"]) 
+  if (response.status_code == 503):
+    print("Cant give game data, return code is 503")
+  if response.status_code == 200:
+    return json.loads(response.text)
   return False
