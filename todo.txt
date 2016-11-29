@@ -1,0 +1,2 @@
+index page with status of database, last shuffle
+find game button and the templates for possible outcomes
