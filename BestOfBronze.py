@@ -6,7 +6,6 @@ from flask import Flask, redirect, render_template
 webapi = Flask(__name__)
 
 # start by reading database once
-summonerList = []
 # reads the whole database into summonerList: id,tier
 summonerList = []
 with open("SummonerList.txt", "r") as SL:
