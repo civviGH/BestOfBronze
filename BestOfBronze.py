@@ -1,7 +1,8 @@
-from HelperFunctions import *
 import random
+import json
+from HelperFunctions import *
 from time import sleep
-from flask import Flask, redirect, render_template
+from flask import Flask, flash, redirect, render_template
 
 webapi = Flask(__name__)
 
@@ -55,12 +56,33 @@ def shuffleLibrary():
 @webapi.route('/db/find-game')
 def findGame():
   for summoner in summonerList:
-    summonerId = summoner[:summoner.find(",")]
-    sleep(1)
-    if checkIfIngame(int(summoner[:summoner.find(",")])):
+    summonerId = int(summoner[:summoner.find(",")])
+    sleep(1.5)
+    if checkIfIngame(summonerId):
+      print("Found a ranked game")
+      # get game data
+      print("Fetching info")
+      content = giveGameData(summonerId)
+      # read summoner ids of every player
+      print("Fetching summoner ids")
+      summonerIds = getSummonerIdsFromContent(content)
+      # read champion ids 
+      print("Fetching champion ids")
+      championIds = getChampionIdsFromContent(content)
+      # get champion names
+      print("Converting ids to Names")
+      championNames = []
+      for id in championIds:
+        championNames.append(getChampionName(id))
+      # make list of summonerids with champ ids
+      summoners = []
+      for i in range(10):
+        summoners.append([summonerIds[i], championNames[i]])
       # if someone is ingame, print template for match view
-      return render_template("ingame.html", )
+      print("Rendering template")
+      return render_template("ingame.html", summoners = summoners)
   # if no one is ingame, go back to index
+  flash('Did not find any1 ingame.')
   return redirect('/')
 
 webapi.run()  

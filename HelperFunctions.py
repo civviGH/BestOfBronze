@@ -1,3 +1,4 @@
+from ChampionDictionary import championDic
 import requests
 import config
 import json
@@ -50,9 +51,34 @@ def checkIfIngame(summonerId):
   return False
 
 def giveGameData(summonerId):
-  response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/36728651?api_key=" + config.static["api-key"]) 
+  response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/" + str(summonerId) + "?api_key=" + config.static["api-key"]) 
   if (response.status_code == 503):
     print("Cant give game data, return code is 503")
+    return ""
   if response.status_code == 200:
     return json.loads(response.text)
-  return False
+  print("giveGameData() does unwanted stuff")
+  return ""
+
+def getSummonerIdsFromContent(content):
+  summonerIds = []
+  for participant in content["participants"]:
+    summonerIds.append(int(participant["summonerId"]))
+  return summonerIds
+
+def getChampionIdsFromContent(content):
+  championIds = []
+  for participant in content["participants"]:
+    championIds.append(int(participant["championId"]))
+  return championIds 
+
+def getChampionName(championId):
+  try:
+    return championDic[championId]
+  except:              
+    print("Encountered champion id i dont konw, trying to request it")
+    response = requests.get("https://global.api.pvp.net/api/lol/static-data/na/v1.2/champion/" + str(championId) + "?api_key=" + config.static["api-key"])
+    content = json.loads(reponse.text)
+    champName = content["name"]
+    print("I guess its " + champName)
+    return champName

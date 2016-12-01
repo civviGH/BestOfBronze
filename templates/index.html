@@ -17,11 +17,14 @@
 
 <hr>
 
-{% if name %}
-  Hello, {{ name }}.
-{% else %}
-  Hello, nobody.
-{% endif %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      {{ message }} <br>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 </body>
 
 </html>
