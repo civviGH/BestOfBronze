@@ -39,7 +39,7 @@ def checkForHighElo():
   SummonerList.close()
 
 def checkIfIngame(summonerId):
-  response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/36728651?api_key=" + config.static["api-key"]) 
+  response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/" + str(summonerId) + "?api_key=" + config.static["api-key"]) 
   print(response.status_code)
   if (response.status_code == 503):
     print("Cant check if ingame, return code is 503")

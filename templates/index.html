@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+
+<head>
+<title>Best of Bronze</title>
+</head>
+
+<body>
+
+<center> Menu </center>
+
+<a href="/">Index</a>
+<a href="/db/read-database">Re-read Database</a>
+<a href="/db/shuffle-library">Shuffle Library</a>
+<a href="/db/print-database">Print Database</a>
+<a href="/db/find-game">Find Game</a>
+
+<hr>
+
+{% if name %}
+  Hello, {{ name }}.
+{% else %}
+  Hello, nobody.
+{% endif %}
+</body>
+
+</html>
