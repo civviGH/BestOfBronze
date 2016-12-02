@@ -123,5 +123,7 @@ championDic = {
 	238:"Zed",
 	115:"Ziggs",
 	26:"Zilean",
-	143:"Zyra"
+	143:"Zyra",
+  202:"Jhin",
+  420:"Illaoi"
 }

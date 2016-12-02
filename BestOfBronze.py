@@ -57,27 +57,36 @@ def shuffleLibrary():
 def findGame():
   for summoner in summonerList:
     summonerId = int(summoner[:summoner.find(",")])
+    # sleeps are added to ensure the maximum number of api calls does not exceed limits
     sleep(1.5)
     if checkIfIngame(summonerId):
       print("Found a ranked game")
       # get game data
       print("Fetching info")
+      sleep(0.5)
       content = giveGameData(summonerId)
       # read summoner ids of every player
       print("Fetching summoner ids")
+      sleep(0.5)
       summonerIds = getSummonerIdsFromContent(content)
+      # get name of every summoner 
+      print("Converting Summoner ids to Names")
+      sleep(0.5)
+      summonerNames = getSummonerNames(summonerIds)
       # read champion ids 
       print("Fetching champion ids")
+      sleep(0.5)
       championIds = getChampionIdsFromContent(content)
       # get champion names
-      print("Converting ids to Names")
+      print("Converting Champion ids to Names")
+      sleep(0.5)
       championNames = []
       for id in championIds:
         championNames.append(getChampionName(id))
       # make list of summonerids with champ ids
       summoners = []
       for i in range(10):
-        summoners.append([summonerIds[i], championNames[i]])
+        summoners.append([summonerNames[i], championNames[i]])
       # if someone is ingame, print template for match view
       print("Rendering template")
       return render_template("ingame.html", summoners = summoners)

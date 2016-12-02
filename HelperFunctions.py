@@ -78,7 +78,23 @@ def getChampionName(championId):
   except:              
     print("Encountered champion id i dont konw, trying to request it")
     response = requests.get("https://global.api.pvp.net/api/lol/static-data/na/v1.2/champion/" + str(championId) + "?api_key=" + config.static["api-key"])
-    content = json.loads(reponse.text)
+    content = json.loads(response.text)
     champName = content["name"]
-    print("I guess its " + champName)
+    print("I guess its " + champName + " (" + str(championId) + ")")
+    print("Please add the missing champion to the ChampionDictionary.py and commit")
     return champName
+
+def getSummonerNames(summonerIds):
+  listOfIds = ""
+  for id in summonerIds:
+    listOfIds = listOfIds + str(id) + ","
+  response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/" + listOfIds[:-1] + "?api_key=" + config.static["api-key"])
+  if response.status_code != 200:
+    print("Could not retrieve summoner names because of bad api request")
+    return ""
+  content = json.loads(response.text)
+  print(type(content))
+  summonerNames = []
+  for key,summoner in content.iteritems():
+    summonerNames.append(summoner["name"])
+  return summonerNames
