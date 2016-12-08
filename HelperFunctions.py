@@ -72,7 +72,7 @@ def getChampionIdsFromContent(content):
     championIds.append(int(participant["championId"]))
   return championIds 
 
-def getChampionName(championId):
+def getChampionNameById(championId):
   try:
     return championDic[championId]
   except:              
@@ -84,7 +84,7 @@ def getChampionName(championId):
     print("Please add the missing champion to the ChampionDictionary.py and commit")
     return champName
 
-def getSummonerNames(summonerIds):
+def getSummonerNamesById(summonerIds):
   listOfIds = ""
   for id in summonerIds:
     listOfIds = listOfIds + str(id) + ","
@@ -93,8 +93,33 @@ def getSummonerNames(summonerIds):
     print("Could not retrieve summoner names because of bad api request")
     return ""
   content = json.loads(response.text)
-  print(type(content))
   summonerNames = []
   for key,summoner in content.iteritems():
     summonerNames.append(summoner["name"])
   return summonerNames
+
+def getSummonerNames(gameInformation):
+  listOfIds = ""
+  for summoner in gameInformation:
+    listOfIds = listOfIds + str(summoner[0]) + ","
+  response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/" + listOfIds[:-1] + "?api_key=" + config.static["api-key"])
+  if response.status_code != 200:
+    print("Could not retrieve summoner names because of bad api request")
+    return ""
+  content = json.loads(response.text)
+  for summoner in gameInformation:
+    for key,value in content.iteritems():
+      if value["id"] == summoner[0]:
+        summoner.append(value["name"])
+  return gameInformation
+
+def getChampionNames(gameInformation):
+  for summoner in gameInformation:
+    summoner.append(getChampionNameById(summoner[1]))
+  return gameInformation
+
+def getGameInformation(content):
+  gameInformation = []
+  for participant in content["participants"]:
+    gameInformation.append([int(participant["summonerId"]),int(participant["championId"])])
+  return gameInformation

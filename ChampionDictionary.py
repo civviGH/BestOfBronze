@@ -35,11 +35,13 @@ championDic = {
 	104:"Graves",
 	120:"Hecarim",
 	74:"Heimerdinger",
+        420:"Illaoi",
 	39:"Irela",
 	40:"Janna",
 	59:"Jarvan IV",
 	24:"Jax",
 	126:"Jayce",
+        202:"Jhin",
 	222:"Jinx",
 	429:"Kalista",
 	43:"Karma",
@@ -49,6 +51,7 @@ championDic = {
 	10:"Kayle",
 	85:"Kennen",
 	121:"Kha'Zix",
+        203:"Kindred",
 	96:"Kog'Maw",
 	7:"LeBlanc",
 	64:"Lee Sin",
@@ -123,7 +126,5 @@ championDic = {
 	238:"Zed",
 	115:"Ziggs",
 	26:"Zilean",
-	143:"Zyra",
-  202:"Jhin",
-  420:"Illaoi"
+	143:"Zyra"
 }

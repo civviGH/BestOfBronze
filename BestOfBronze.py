@@ -60,36 +60,45 @@ def findGame():
     # sleeps are added to ensure the maximum number of api calls does not exceed limits
     sleep(1.5)
     if checkIfIngame(summonerId):
-      print("Found a ranked game")
+      print("Found a ranked game of id <{}>".format(summonerId))
+
       # get game data
       print("Fetching info")
       sleep(0.5)
       content = giveGameData(summonerId)
+
       # read summoner ids of every player
       print("Fetching summoner ids")
       sleep(0.5)
+      # maybe later used for database growth
       summonerIds = getSummonerIdsFromContent(content)
+
+      # fetch game information [id, champ..] for every player
+      print("Fetching game information")
+      sleep(0.5)
+      gameInformation = getGameInformation(content)
+      # should be [ [id,champid] , ... ]
+
       # get name of every summoner 
       print("Converting Summoner ids to Names")
       sleep(0.5)
-      summonerNames = getSummonerNames(summonerIds)
-      # read champion ids 
-      print("Fetching champion ids")
-      sleep(0.5)
-      championIds = getChampionIdsFromContent(content)
+      gameInformation = getSummonerNames(gameInformation)
+      # should now be [ [id,champid,sName] , ... ]
+
       # get champion names
-      print("Converting Champion ids to Names")
       sleep(0.5)
-      championNames = []
-      for id in championIds:
-        championNames.append(getChampionName(id))
-      # make list of summonerids with champ ids
+      gameInformation = getChampionNames(gameInformation)
+      # should now be [ [id,champid,sName,cName] , ... ]
+
+      # make list of summonernames with champnames
       summoners = []
       for i in range(10):
-        summoners.append([summonerNames[i], championNames[i]])
+        summoners.append([gameInformation[i][2], gameInformation[i][3]])
+
       # if someone is ingame, print template for match view
       print("Rendering template")
       return render_template("ingame.html", summoners = summoners)
+
   # if no one is ingame, go back to index
   flash('Did not find any1 ingame.')
   return redirect('/')
