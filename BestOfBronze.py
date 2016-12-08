@@ -2,7 +2,7 @@ import random
 import json
 from HelperFunctions import *
 from time import sleep
-from flask import Flask, flash, redirect, render_template
+from flask import Flask, flash, redirect, render_template, request
 
 webapi = Flask(__name__)
 
@@ -21,7 +21,16 @@ random.shuffle(summonerList)
 @webapi.route('/<name>')
 def index(name=None):
   return render_template("index.html", name = name)
-  
+
+# webinterface to add players to the database by name
+@webapi.route('/action/addSummonerByName')
+def addSummonerByName(name=None):
+  # the message that will be shown in the template, wether adding was successful or not
+  message = ""
+  # the league the player is in
+  league = ""
+  return render_template("addSummoner.html", name=name, message = message, league = league)  
+
 @webapi.route('/db/read-database')
 def readDatabase():
   global summonerList

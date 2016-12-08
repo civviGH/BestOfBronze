@@ -17,6 +17,12 @@
 
 <hr>
 
+<form action="/action/test" method="get">
+  <input type="text" name="testfeld"/>
+  <input type="submit"/>
+</form>
+
+<hr>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     {% for message in messages %}
