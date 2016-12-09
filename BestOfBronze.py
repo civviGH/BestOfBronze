@@ -5,6 +5,7 @@ from time import sleep
 from flask import Flask, flash, redirect, render_template, request
 
 webapi = Flask(__name__)
+webapi.secret_key = 'bestofbronze_secret'
 
 # start by reading database once
 # reads the whole database into summonerList: id,tier
@@ -43,6 +44,7 @@ def readDatabase():
 
   # shuffe the list to randomize search order
   random.shuffle(summonerList)
+  flash ("Re-read Database entries.")
   return redirect('/')
 
 @webapi.route('/db/print-database')
@@ -58,6 +60,7 @@ def printDatabase():
 @webapi.route('/db/shuffle-library')
 def shuffleLibrary():
   global summonerList
+  flash ("Shuffled library.")
   random.shuffle(summonerList)
   return redirect('/')
 
