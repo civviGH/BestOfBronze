@@ -1,5 +1,6 @@
 import random
 import json
+import config
 from HelperFunctions import *
 from time import sleep
 from flask import Flask, flash, redirect, render_template, request
@@ -25,12 +26,20 @@ def index(name=None):
 
 # webinterface to add players to the database by name
 @webapi.route('/action/addSummonerByName')
-def addSummonerByName(name=None):
-  # the message that will be shown in the template, wether adding was successful or not
-  message = ""
-  # the league the player is in
-  league = ""
-  return render_template("addSummoner.html", name=name, message = message, league = league)  
+def addSummonerByName(name=None, tier=None):
+  name = request.args.get("name")
+  tier = request.args.get("tier")
+  # get summoner id from name
+  summonerId = getSummonerIdByName(name)
+  if (summonerId == 0) or (tier is None):
+    flash("Failed to request Id or tier is not specified.")
+  else:
+    if checkIfSummonerExists(summonerId):
+      flash("{} already found in database.".format(name))
+      return redirect('/')
+    flash("Added {} in tier {} to database.".format(name, tier))
+    addSummonerToList(summonerId, tier)
+  return redirect('/')
 
 @webapi.route('/db/read-database')
 def readDatabase():
@@ -67,11 +76,20 @@ def shuffleLibrary():
 # looks for game, prints template if it finds one
 @webapi.route('/db/find-game')
 def findGame():
+  timePlayed = request.args.get("timePlayed")
+  if timePlayed:
+    try:
+      timePlayed = int(timePlayed)
+    except:
+      flash("Time played has to be an integer.")
+      return redirect('/')
+  else:
+    timePlayed = 0
   for summoner in summonerList:
     summonerId = int(summoner[:summoner.find(",")])
     # sleeps are added to ensure the maximum number of api calls does not exceed limits
     sleep(1.5)
-    if checkIfIngame(summonerId):
+    if checkIfIngame(summonerId, timePlayed):
       print("Found a ranked game of id <{}>".format(summonerId))
 
       # get game data
@@ -101,18 +119,25 @@ def findGame():
       sleep(0.5)
       gameInformation = getChampionNames(gameInformation)
       # should now be [ [id,champid,sName,cName] , ... ]
+      
+      # forge data dragon links for champion icons
+      gameInformation = forgeDataDragonLinks(gameInformation)
+      # should now be [ [id,champid,sName,cName,ddlink] , ... ]
 
       # make list of summonernames with champnames
       summoners = []
       for i in range(10):
-        summoners.append([gameInformation[i][2], gameInformation[i][3]])
-
+        summoners.append([gameInformation[i][2], gameInformation[i][4]])
+      
+      # calculate timePlayed
+      ingameTime = (content["gameLength"]/60) + 3
+      
       # if someone is ingame, print template for match view
       print("Rendering template")
-      return render_template("ingame.html", summoners = summoners)
+      return render_template("ingame.html", summoners = summoners, ingameTime = ingameTime)
 
   # if no one is ingame, go back to index
-  flash('Did not find any1 ingame.')
+  flash('Did not find anyone ingame with given search parameters.')
   return redirect('/')
 
 webapi.run()  

@@ -9,6 +9,7 @@
 <body style="margin:3em 0px 0px 0px">
 
 <div class="mainPage">
+
 <center>
 <a href="/" class="headButton">Home</a>
 <a href="/db/read-database" class="headButton">Re-read Database</a>
@@ -31,6 +32,21 @@
   </tr>
   </table>
 </form>
+</center>
+
+<hr class="fancy">
+
+<center> <h1 class="headText">Add summoner to database by name</h1></center>
+<center>
+<form action="/action/addSummonerByName" method="get">
+  <table>
+  <tr>
+  <td><div class="text">Summoner Name</div></td><td><div class="text">League (e.g B5)</div></td><td rowspan="2"> <input type="submit" class="headButton"/> </td> 
+  </tr>
+  <tr>
+  <td> <input type="text" name="name"/></td><td> <input type="text" name="tier"/></td>
+  </tr>
+  </table>
 </center>
 
 <hr class="fancy">

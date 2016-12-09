@@ -3,13 +3,53 @@
 
 <head>
 <title>Best of Bronze</title>
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
 </head>
 
-<body>
+<body style="margin:3em 0px 0px 0px">
 
-{% for summoner in summoners %}
-  {{ summoner[0] }}, {{ summoner[1] }} <br>
+<div class="mainPage">
+
+<center>
+<a href="/" class="headButton">Home</a>
+<a href="/db/read-database" class="headButton">Re-read Database</a>
+<a href="/db/shuffle-library" class="headButton">Shuffle Library</a>
+<a href="/db/print-database" class="headButton">Database Info</a>
+</center>
+
+<hr class="fancy">
+
+<center>
+<table border="1">
+
+<tr><td colspan="8"><center><h2 class="text">Time Played: {{ ingameTime }}</h2></center> </td> </tr>
+{% for i in range(5) %}
+  <tr>
+  <td><h2 class="text" align="right">{{ summoners[i][0] }}</h2></td><td>
+  <img src={{ summoners[i][1] }}>
+  </td><td>S1</td><td>S2</td>
+  <td>S1</td><td>S2</td><td>
+  <img src={{ summoners[i+5][1] }}>
+  </td><td><h2 class="text">{{ summoners[i+5][0]}}</h2></td>
+  </tr>
 {% endfor %}
+</table>
+</center>
+
+<hr class="fancy">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li class="text">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+{% block body %}{% endblock %}
+
+</div>
 
 </body>
 

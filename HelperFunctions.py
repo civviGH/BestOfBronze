@@ -7,7 +7,7 @@ requests.packages.urllib3.disable_warnings()
 
 def addSummonerToList(summonerId, tier):
   with open("SummonerList.txt", "a") as SummonerList:
-    SummonerList.write(str(summonerId) + "," + tier + "\r\n")
+    SummonerList.write(str(summonerId) + "," + tier + "\n")
 
 def clearSummonerList():
   open("SummonerList.txt", "w").close()
@@ -39,7 +39,7 @@ def checkForHighElo():
   SummonerList.truncate()
   SummonerList.close()
 
-def checkIfIngame(summonerId):
+def checkIfIngame(summonerId, timePlayed):
   response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/" + str(summonerId) + "?api_key=" + config.static["api-key"]) 
   print(response.status_code)
   if (response.status_code == 503):
@@ -47,7 +47,10 @@ def checkIfIngame(summonerId):
   if response.status_code == 200:
     content = json.loads(response.text)
     if content["gameQueueConfigId"] in config.static["ranked-queues"]:
-      return True
+      if (timePlayed == 0) or (content["gameLength"] + 3 <= timePlayed*60.0):
+        return True
+      else:
+        print("Found a ranked game, but time played is too high. <{}>".format(str((content["gameLength"]/60) + 3)))
   return False
 
 def giveGameData(summonerId):
@@ -83,6 +86,14 @@ def getChampionNameById(championId):
     print("I guess its " + champName + " (" + str(championId) + ")")
     print("Please add the missing champion to the ChampionDictionary.py and commit")
     return champName
+
+def getSummonerIdByName(summonerName):
+  response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/by-name/" + summonerName + "?api_key=" + config.static["api-key"])
+  if response.status_code == 503:
+    print("Could not retrieve summoner name because of bad api request.")
+    return 0
+  content = json.loads(response.text)
+  return content[summonerName.lower()]["id"]
 
 def getSummonerNamesById(summonerIds):
   listOfIds = ""
@@ -122,4 +133,10 @@ def getGameInformation(content):
   gameInformation = []
   for participant in content["participants"]:
     gameInformation.append([int(participant["summonerId"]),int(participant["championId"])])
+  return gameInformation
+
+def forgeDataDragonLinks(gameInformation):
+  for summoner in gameInformation:
+    ddlink = "http://ddragon.leagueoflegends.com/cdn/" + config.static["data-dragon-version"] + "/img/champion/" + summoner[3] + ".png"
+    summoner.append(ddlink)
   return gameInformation
