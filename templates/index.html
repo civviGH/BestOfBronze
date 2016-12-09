@@ -3,33 +3,36 @@
 
 <head>
 <title>Best of Bronze</title>
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
 </head>
 
-<body>
+<body style="margin:3em 0px 0px 0px">
 
-<center> Menu </center>
+<div class="mainPage">
+<center>
+<a href="/" class="headButton">Home</a>
+<a href="/db/read-database" class="headButton">Re-read Database</a>
+<a href="/db/shuffle-library" class="headButton">Shuffle Library</a>
+<a href="/db/print-database" class="headButton">Database Info</a>
+</center>
 
-<a href="/">Index</a>
-<a href="/db/read-database">Re-read Database</a>
-<a href="/db/shuffle-library">Shuffle Library</a>
-<a href="/db/print-database">Print Database</a>
-<a href="/db/find-game">Find Game</a>
+<hr class="fancy">
 
-<hr>
-
-<form action="/action/test" method="get">
-  <input type="text" name="testfeld"/>
-  <input type="submit"/>
+<center> <h1 class="headText">Find a game to watch</h1></center>
+<center>
+<form action="/db/find-game" method="get">
+  <table>
+  <tr>
+  <td><center><div class="text">Time played (m)</div></center></td> 
+  <td rowspan="2"> <input type="submit" class="headButton"/> </td> 
+  </tr>
+  <tr>
+  <td> <input type="text" name="timePlayed"/> </td>
+  </tr>
+  </table>
 </form>
-
-<hr>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      {{ message }} <br>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+</center>
+</div>
 
 </body>
 
