@@ -55,7 +55,7 @@ championDic = {
         203:"Kindred",
 	96:"Kog'Maw",
 	7:"LeBlanc",
-	64:"Lee Sin",
+	64:"LeeSin",
 	89:"Leona",
 	127:"Lissandra",
 	236:"Lucian",
