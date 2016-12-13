@@ -140,3 +140,9 @@ def forgeDataDragonLinks(gameInformation):
     ddlink = "http://ddragon.leagueoflegends.com/cdn/" + config.static["data-dragon-version"] + "/img/champion/" + summoner[3] + ".png"
     summoner.append(ddlink)
   return gameInformation
+
+def getDataDragonVersion():
+  response = requests.get("https://ddragon.leagueoflegends.com/api/versions.json")
+  content = json.loads(response.text)
+  print content
+  return str(content[0])
