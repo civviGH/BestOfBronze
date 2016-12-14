@@ -1,4 +1,3 @@
-from ChampionDictionary import championDic
 import requests
 import json
 import requests.packages.urllib3

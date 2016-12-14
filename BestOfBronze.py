@@ -1,5 +1,6 @@
 import random
 import json
+import sys
 from HelperFunctions import *
 from time import sleep
 from flask import Flask, flash, redirect, render_template, request
@@ -12,11 +13,16 @@ webapi.secret_key = 'bestofbronze_secret'
 # start by reading database once
 # reads the whole database into summonerList: id,tier
 summonerList = []
-with open("SummonerList.txt", "r") as SL:
-  for line in SL:
-    # line[:-1] cuts out the \n appendix
-    summonerList.append(line[:-1])
-
+try:
+  with open("SummonerList.txt", "r") as SL:
+    for line in SL:
+      # line[:-1] cuts out the \n appendix
+      summonerList.append(line[:-1])
+except:
+  print("Did not find a database. Creating an empty one. Please add one summoner by hand and then migrate.")
+  print("Start again to use empty database.")
+  foo = open("SummonerList.txt", "w+")
+  sys.exit()
 # shuffe the list to randomize search order
 random.shuffle(summonerList)
 
