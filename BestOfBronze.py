@@ -19,6 +19,10 @@ with open("SummonerList.txt", "r") as SL:
 # shuffe the list to randomize search order
 random.shuffle(summonerList)
 
+@webapi.route('/test')
+def test():
+  return ""
+
 @webapi.route('/')
 @webapi.route('/<name>')
 def index(name=None):
@@ -138,6 +142,27 @@ def findGame():
 
   # if no one is ingame, go back to index
   flash('Did not find anyone ingame with given search parameters.')
+  return redirect('/')
+
+  
+@webapi.route('/static/update')
+def updateStatics():
+  # get data dragon version once, pass it into other getters
+  ddv = getDataDragonVersion()
+  fails = 0
+  answer = getChampionStatics(ddv)
+  if answer:
+    flash(answer)
+    fails += 1
+    
+  answer = getSummonerSpellStatics(ddv)
+  if answer:
+    flash(answer)
+    fails += 1
+    
+  # flash a success message if there are no errors
+  if fails == 0:
+    flash("All static data has been updated successfully. Running on version " + ddv + ".")
   return redirect('/')
 
 webapi.run()  

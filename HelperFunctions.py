@@ -144,5 +144,22 @@ def forgeDataDragonLinks(gameInformation):
 def getDataDragonVersion():
   response = requests.get("https://ddragon.leagueoflegends.com/api/versions.json")
   content = json.loads(response.text)
-  print content
   return str(content[0])
+  
+def getChampionStatics(ddv):
+  response = requests.get("http://ddragon.leagueoflegends.com/cdn/" + ddv + "/data/en_US/champion.json")
+  if response.status_code == 200:
+    content = response.text.encode('utf-8')
+    with open("static/champion.json", "w") as champs:
+      champs.write(content)
+    return None
+  return "Did not fetch champion static data. Return code was " + str(response.status_code + ".")
+  
+def getSummonerSpellStatics(ddv):
+  response = requests.get("http://ddragon.leagueoflegends.com/cdn/" + ddv + "/data/en_US/summoner.json")
+  if response.status_code == 200:
+    content = response.text.encode('utf-8')
+    with open("static/summoner.json", "w") as summoner:
+      summoner.write(content)
+    return None
+  return "Did not fetch summoner spells static data. Return code was " + str(response.status_code + ".")

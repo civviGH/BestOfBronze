@@ -1,2 +1,5 @@
-index page with status of database, last shuffle
-find game button and the templates for possible outcomes
+rework config file into json for easier manipulation of static data
+write data dragon version into config on static update
+change the champion id/key/name lookup to use the requested static data
+implement summoner spell lookup
+use summoner spell static data to forge image links

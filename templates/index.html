@@ -51,6 +51,7 @@
 
 <hr class="fancy">
 
+<h2 class="text"> Messages: </h2>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
@@ -61,6 +62,13 @@
   {% endif %}
 {% endwith %}
 {% block body %}{% endblock %}
+
+<hr class="fancy">
+
+<center>
+<a href="/test" class="headButton">Testbutton</a>
+<a href="/static/update" class="headButton">Update</a>
+</center>
 
 </div>
 
