@@ -79,7 +79,6 @@ def getChampionIdsFromContent(content):
     championIds.append(int(participant["championId"]))
   return championIds 
 
-# rework to use static data from data dragon
 def getChampionNameById(championId):
   with open ("static/champion.json") as data_file:
     champions = json.load(data_file)
@@ -100,7 +99,7 @@ def getSummonerIdByName(summonerName):
   with open("config.json") as data_file:
     config = json.load(data_file)
     response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/by-name/" + summonerName + "?api_key=" + config["api-key"])
-  if response.status_code == 503:
+  if response.status_code != 200:
     print("Could not retrieve summoner name because of bad api request.")
     return 0
   content = json.loads(response.text)
@@ -125,7 +124,7 @@ def getSummonerNamesById(summonerIds):
 def getSummonerNames(gameInformation):
   listOfIds = ""
   for summoner in gameInformation:
-    listOfIds = listOfIds + str(summoner[0]) + ","
+    listOfIds = listOfIds + str(summoner["summonerId"]) + ","
   with open("config.json") as data_file:
     config = json.load(data_file)
     response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/" + listOfIds[:-1] + "?api_key=" + config["api-key"])
@@ -135,27 +134,31 @@ def getSummonerNames(gameInformation):
   content = json.loads(response.text)
   for summoner in gameInformation:
     for key,value in content.iteritems():
-      if value["id"] == summoner[0]:
-        summoner.append(value["name"])
+      if value["id"] == summoner["summonerId"]:
+        summoner["summonerName"] = value["name"]
   return gameInformation
 
 def getChampionNames(gameInformation):
   for summoner in gameInformation:
-    summoner.append(getChampionNameById(summoner[1]))
+    summoner["championName"] = getChampionNameById(summoner["championId"])
   return gameInformation
 
 def getGameInformation(content):
   gameInformation = []
   for participant in content["participants"]:
-    gameInformation.append([int(participant["summonerId"]),int(participant["championId"])])
+    tempDic = {}
+    tempDic["summonerId"] = int(participant["summonerId"])
+    tempDic["championId"] = int(participant["championId"])
+    tempDic["spellIds"] = [participant["spell1Id"],participant["spell1Id"]]
+    gameInformation.append(tempDic)
   return gameInformation
 
 def forgeDataDragonLinks(gameInformation):
   with open("config.json") as data_file:
     config = json.load(data_file)
   for summoner in gameInformation:
-    ddlink = "http://ddragon.leagueoflegends.com/cdn/" + config["data-dragon-version"] + "/img/champion/" + summoner[3] + ".png"
-    summoner.append(ddlink)
+    ddlink = "http://ddragon.leagueoflegends.com/cdn/" + config["data-dragon-version"] + "/img/champion/" + summoner["championName"] + ".png"
+    summoner["ddlink"] = ddlink
   return gameInformation
 
 def getDataDragonVersion():

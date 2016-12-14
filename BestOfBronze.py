@@ -1,6 +1,5 @@
 import random
 import json
-import config
 from HelperFunctions import *
 from time import sleep
 from flask import Flask, flash, redirect, render_template, request
@@ -21,6 +20,9 @@ with open("SummonerList.txt", "r") as SL:
 # shuffe the list to randomize search order
 random.shuffle(summonerList)
 
+# list for already searched summoners
+alreadySearched = []
+
 @webapi.route('/test')
 def test():
   with open('config.json') as data_file:    
@@ -29,8 +31,11 @@ def test():
   return ""
 
 @webapi.route('/')
-@webapi.route('/<name>')
 def index(name=None):
+  global alreadySearched
+  if len(alreadySearched) > 0:
+    alreadySearched = []
+    flash("Resetted the already-searched list.")
   return render_template("index.html", name = name)
 
 # webinterface to add players to the database by name
@@ -85,10 +90,15 @@ def shuffleLibrary():
 # looks for game, prints template if it finds one
 @webapi.route('/db/find-game')
 def findGame():
+  global summonerList
+  global alreadySearched
   timePlayed = request.args.get("timePlayed")
   if timePlayed:
     try:
       timePlayed = int(timePlayed)
+      if timePlayed < 0:
+        flash("U should not look for game with negative playing time.")
+        return redirect('/')
     except:
       flash("Time played has to be an integer.")
       return redirect('/')
@@ -96,47 +106,55 @@ def findGame():
     timePlayed = 0
   for summoner in summonerList:
     summonerId = int(summoner[:summoner.find(",")])
+    print("Looking for <{}>".format(str(summonerId)))
+    if (summonerId in alreadySearched):
+      print("Already looked for it.")
+      print("---")
+      continue
+    else:
+      alreadySearched.append(summonerId)
+      
     # sleeps are added to ensure the maximum number of api calls does not exceed limits
     sleep(1.5)
     if checkIfIngame(summonerId, timePlayed):
       print("Found a ranked game of id <{}>".format(summonerId))
 
       # get game data
-      print("Fetching info")
+      print("Fetching game content.")
       sleep(0.5)
       content = giveGameData(summonerId)
 
       # read summoner ids of every player
-      print("Fetching summoner ids")
+      print("Fetching summoner ids.")
       sleep(0.5)
       # maybe later used for database growth
       summonerIds = getSummonerIdsFromContent(content)
 
-      # fetch game information [id, champ..] for every player
-      print("Fetching game information")
+      # fetch game information [id, champ, summoner spells..] for every player
+      print("Fetching game information.")
       sleep(0.5)
       gameInformation = getGameInformation(content)
-      # should be [ [id,champid] , ... ]
+      # gameInformation now is [{summonerId championId spellIds} ... ]
 
       # get name of every summoner 
-      print("Converting Summoner ids to Names")
+      print("Looking up names of the players.")
       sleep(0.5)
       gameInformation = getSummonerNames(gameInformation)
-      # should now be [ [id,champid,sName] , ... ]
+      # should now be [{summonerId championId spellIds summonerName} ... ]
 
       # get champion names
       sleep(0.5)
       gameInformation = getChampionNames(gameInformation)
-      # should now be [ [id,champid,sName,cName] , ... ]
+      # should now be [{summonerId championId spellIds championName summonerName} ... ]
       
       # forge data dragon links for champion icons
       gameInformation = forgeDataDragonLinks(gameInformation)
-      # should now be [ [id,champid,sName,cName,ddlink] , ... ]
+      # should now be [{summonerId championId spellIds championName summonerName ddlink} ... ]
 
       # make list of summonernames with champnames
       summoners = []
       for i in range(10):
-        summoners.append([gameInformation[i][2], gameInformation[i][4]])
+        summoners.append([gameInformation[i]["summonerName"], gameInformation[i]["ddlink"]])
       
       # calculate timePlayed
       ingameTime = (content["gameLength"]/60) + 3
@@ -147,6 +165,8 @@ def findGame():
 
   # if no one is ingame, go back to index
   flash('Did not find anyone ingame with given search parameters.')
+  flash('Resetted the already-searched list.')
+  alreadySearched = []
   return redirect('/')
 
   

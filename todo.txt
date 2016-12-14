@@ -1,4 +1,4 @@
-write data dragon version into config on static update
-change the champion id/key/name lookup to use the requested static data
+write functions to migrate database in bronze league
 implement summoner spell lookup
 use summoner spell static data to forge image links
+display banned champions
