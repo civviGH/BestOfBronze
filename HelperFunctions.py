@@ -1,6 +1,5 @@
 from ChampionDictionary import championDic
 import requests
-import config
 import json
 import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
@@ -40,13 +39,16 @@ def checkForHighElo():
   SummonerList.close()
 
 def checkIfIngame(summonerId, timePlayed):
-  response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/" + str(summonerId) + "?api_key=" + config.static["api-key"]) 
+  with open('config.json') as data_file:
+    config = json.load(data_file)
+    rankedQueues = config["ranked-queues"]
+    response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/" + str(summonerId) + "?api_key=" + config["api-key"]) 
   print(response.status_code)
   if (response.status_code == 503):
     print("Cant check if ingame, return code is 503")
   if response.status_code == 200:
     content = json.loads(response.text)
-    if content["gameQueueConfigId"] in config.static["ranked-queues"]:
+    if content["gameQueueConfigId"] in rankedQueues:
       if (timePlayed == 0) or (content["gameLength"] + 3 <= timePlayed*60.0):
         return True
       else:
@@ -54,7 +56,9 @@ def checkIfIngame(summonerId, timePlayed):
   return False
 
 def giveGameData(summonerId):
-  response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/" + str(summonerId) + "?api_key=" + config.static["api-key"]) 
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+    response = requests.get("https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/" + str(summonerId) + "?api_key=" + config["api-key"]) 
   if (response.status_code == 503):
     print("Cant give game data, return code is 503")
     return ""
@@ -75,20 +79,27 @@ def getChampionIdsFromContent(content):
     championIds.append(int(participant["championId"]))
   return championIds 
 
+# rework to use static data from data dragon
 def getChampionNameById(championId):
-  try:
-    return championDic[championId]
-  except:              
-    print("Encountered champion id i dont konw, trying to request it")
-    response = requests.get("https://global.api.pvp.net/api/lol/static-data/na/v1.2/champion/" + str(championId) + "?api_key=" + config.static["api-key"])
-    content = json.loads(response.text)
-    champName = content["name"]
-    print("I guess its " + champName + " (" + str(championId) + ")")
-    print("Please add the missing champion to the ChampionDictionary.py and commit")
-    return champName
+  with open ("static/champion.json") as data_file:
+    champions = json.load(data_file)
+  for key,value in champions["data"].iteritems():
+    if int(value["key"]) == championId:
+      return value["id"]
+  print("Encountered champion id i dont know, trying to request it")
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+  response = requests.get("https://global.api.pvp.net/api/lol/static-data/na/v1.2/champion/" + str(championId) + "?api_key=" + config["api-key"])
+  content = json.loads(response.text)
+  champName = content["name"]
+  print("I guess its " + champName + " (" + str(championId) + ")")
+  print("Please update your static data to prevent additional requests to be necessary.")
+  return champName
 
 def getSummonerIdByName(summonerName):
-  response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/by-name/" + summonerName + "?api_key=" + config.static["api-key"])
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+    response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/by-name/" + summonerName + "?api_key=" + config["api-key"])
   if response.status_code == 503:
     print("Could not retrieve summoner name because of bad api request.")
     return 0
@@ -99,7 +110,9 @@ def getSummonerNamesById(summonerIds):
   listOfIds = ""
   for id in summonerIds:
     listOfIds = listOfIds + str(id) + ","
-  response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/" + listOfIds[:-1] + "?api_key=" + config.static["api-key"])
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+    response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/" + listOfIds[:-1] + "?api_key=" + config["api-key"])
   if response.status_code != 200:
     print("Could not retrieve summoner names because of bad api request")
     return ""
@@ -113,7 +126,9 @@ def getSummonerNames(gameInformation):
   listOfIds = ""
   for summoner in gameInformation:
     listOfIds = listOfIds + str(summoner[0]) + ","
-  response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/" + listOfIds[:-1] + "?api_key=" + config.static["api-key"])
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+    response = requests.get("https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/" + listOfIds[:-1] + "?api_key=" + config["api-key"])
   if response.status_code != 200:
     print("Could not retrieve summoner names because of bad api request")
     return ""
@@ -136,8 +151,10 @@ def getGameInformation(content):
   return gameInformation
 
 def forgeDataDragonLinks(gameInformation):
+  with open("config.json") as data_file:
+    config = json.load(data_file)
   for summoner in gameInformation:
-    ddlink = "http://ddragon.leagueoflegends.com/cdn/" + config.static["data-dragon-version"] + "/img/champion/" + summoner[3] + ".png"
+    ddlink = "http://ddragon.leagueoflegends.com/cdn/" + config["data-dragon-version"] + "/img/champion/" + summoner[3] + ".png"
     summoner.append(ddlink)
   return gameInformation
 

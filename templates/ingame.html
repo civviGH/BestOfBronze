@@ -25,10 +25,10 @@
 <tr><td colspan="8"><center><h2 class="text">Time Played: {{ ingameTime }} minutes</h2></center> </td> </tr>
 {% for i in range(5) %}
   <tr>
-  <td><h2 class="text" align="right">{{ summoners[i][0] }}</h2></td><td>
+  <td><h2 class="text" align="right">{{ summoners[i][0] }}</h2></td><td bgcolor="black">
   <img src={{ summoners[i][1] }}>
   </td><td>S1</td><td>S2</td>
-  <td>S1</td><td>S2</td><td>
+  <td>S1</td><td>S2</td><td bgcolor="black">
   <img src={{ summoners[i+5][1] }}>
   </td><td><h2 class="text">{{ summoners[i+5][0]}}</h2></td>
   </tr>

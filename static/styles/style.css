@@ -55,11 +55,6 @@ body {
   box-shadow: 0.5em 0.5em grey;
 }
 
-h1.headText {
-  color: #F6F6C2;
-  font-family: "Courier New", Courier, monospace;
-}
-
 .text{
   color: #F6F6C2;
   font-family: "Courier New", Courier, monospace;

@@ -5,6 +5,8 @@ from HelperFunctions import *
 from time import sleep
 from flask import Flask, flash, redirect, render_template, request
 
+from pprint import pprint
+
 webapi = Flask(__name__)
 webapi.secret_key = 'bestofbronze_secret'
 
@@ -21,6 +23,9 @@ random.shuffle(summonerList)
 
 @webapi.route('/test')
 def test():
+  with open('config.json') as data_file:    
+    data = json.load(data_file)
+    pprint(data)
   return ""
 
 @webapi.route('/')
@@ -163,6 +168,14 @@ def updateStatics():
   # flash a success message if there are no errors
   if fails == 0:
     flash("All static data has been updated successfully. Running on version " + ddv + ".")
+  
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+    config["data-dragon-version"] = ddv
+  
+  with open("config.json", "w") as data_file:
+    json.dump(config, data_file)
+    
   return redirect('/')
 
 webapi.run()  
