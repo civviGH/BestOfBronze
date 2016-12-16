@@ -29,12 +29,23 @@ random.shuffle(summonerList)
 # list for already searched summoners
 alreadySearched = []
 
-@webapi.route('/test')
-def test():
-  with open('config.json') as data_file:    
-    data = json.load(data_file)
-    pprint(data)
-  return ""
+@webapi.route('/db/populate')
+def populateDatabase():
+  added = 0
+  summonerName = request.args.get("summonerName")
+  summonerId = getSummonerIdByName(summonerName)
+  print(summonerId)
+  if summonerId == 0:
+    flash("Failed to request Id from Riot API.")
+    return redirect('/')
+  league = getLeagueEntryById(summonerId)
+  listOfSummoners = getBronzePlayers(league)
+  for id in listOfSummoners:
+    if not checkIfSummonerExists(id):
+      added += 1
+      addSummonerToList(id, "B5")
+  flash("Added {} new players to the database.".format(str(added)))
+  return redirect('/')
 
 @webapi.route('/')
 def index(name=None):

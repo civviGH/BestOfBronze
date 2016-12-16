@@ -47,6 +47,7 @@
   <td> <input type="text" name="name"/></td><td> <input type="text" name="tier"/></td>
   </tr>
   </table>
+</form>
 </center>
 
 <hr class="fancy">
@@ -66,7 +67,22 @@
 <hr class="fancy">
 
 <center>
-<a href="/test" class="headButton">Testbutton</a>
+<h1 class="text">Populate Database </h1>
+<form action="/db/populate" method="get">
+  <table>
+  <tr>
+  <td><center><div class="text">Summoner Name</div></center></td> 
+  <td rowspan="2"> <input type="submit" class="headButton"/> </td> 
+  </tr>
+  <tr>
+  <td> <input type="text" name="summonerName"/> </td>
+  </tr>
+  </table>
+</form>
+
+<br>
+<hr class="fancy">
+
 <a href="/static/update" class="headButton">Update</a>
 </center>
 

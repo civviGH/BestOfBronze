@@ -3,6 +3,8 @@ import json
 import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 
+from pprint import pprint
+
 def addSummonerToList(summonerId, tier):
   with open("SummonerList.txt", "a") as SummonerList:
     SummonerList.write(str(summonerId) + "," + tier + "\n")
@@ -182,3 +184,22 @@ def getSummonerSpellStatics(ddv):
       summoner.write(content)
     return None
   return "Did not fetch summoner spells static data. Return code was " + str(response.status_code + ".")
+  
+def getLeagueEntryById(summonerId):
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+  response = requests.get("https://euw.api.pvp.net/api/lol/euw/v2.5/league/by-summoner/" + str(summonerId) + "?api_key=" + config["api-key"])
+  if response.status_code != 200:
+    return None
+  content = json.loads(response.text)
+  for league in content[str(summonerId)]:
+    if league["queue"] == "RANKED_SOLO_5x5":
+      return league["entries"]
+  return None
+  
+def getBronzePlayers(league):
+  playerList = []
+  for entry in league:
+    if entry["division"] == "V":
+      playerList.append(entry["playerOrTeamId"])
+  return playerList
