@@ -33,6 +33,7 @@ alreadySearched = []
 def populateDatabase():
   added = 0
   summonerName = request.args.get("summonerName")
+  summonerName = summonerName.replace(" ","")
   summonerId = getSummonerIdByName(summonerName)
   print(summonerId)
   if summonerId == 0:
@@ -215,4 +216,4 @@ def updateStatics():
     
   return redirect('/')
 
-webapi.run()  
+webapi.run(port=5000)  
