@@ -83,8 +83,12 @@ def getChampionIdsFromContent(content):
   return championIds 
 
 def getChampionNameById(championId):
-  with open ("static/champion.json") as data_file:
-    champions = json.load(data_file)
+  try:
+    with open ("static/champion.json") as data_file:
+     champions = json.load(data_file)
+  except:
+    print("Static data not found. Please update static data.")
+    return ""
   for key,value in champions["data"].iteritems():
     if int(value["key"]) == championId:
       return value["id"]
@@ -152,7 +156,7 @@ def getGameInformation(content):
     tempDic = {}
     tempDic["summonerId"] = int(participant["summonerId"])
     tempDic["championId"] = int(participant["championId"])
-    tempDic["spellIds"] = [participant["spell1Id"],participant["spell1Id"]]
+    tempDic["spellIds"] = [participant["spell1Id"],participant["spell2Id"]]
     gameInformation.append(tempDic)
   return gameInformation
 
@@ -162,6 +166,21 @@ def forgeDataDragonLinks(gameInformation):
   for summoner in gameInformation:
     ddlink = "http://ddragon.leagueoflegends.com/cdn/" + config["data-dragon-version"] + "/img/champion/" + summoner["championName"] + ".png"
     summoner["ddlink"] = ddlink
+  return gameInformation
+
+def forgeSummonerSpellLinks(gameInformation):
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+  with open("static/summoner.json") as data_file:
+    staticSpellData = json.load(data_file)
+  for summoner in gameInformation:
+    summonerLinks = []
+    for spellId in summoner["spellIds"]:
+      for key,value in staticSpellData["data"].iteritems():
+        if value["key"] == str(spellId):
+          spellName = value["image"]["full"]
+          summonerLinks.append("http://ddragon.leagueoflegends.com/cdn/" + config["data-dragon-version"] + "/img/spell/" + spellName)
+    summoner["spellLinks"] = summonerLinks
   return gameInformation
 
 def getDataDragonVersion():

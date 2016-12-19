@@ -169,10 +169,14 @@ def findGame():
       gameInformation = forgeDataDragonLinks(gameInformation)
       # should now be [{summonerId championId spellIds championName summonerName ddlink} ... ]
 
+      # forge data dragon links for summoner spells
+      gameInformation = forgeSummonerSpellLinks(gameInformation)
+      # should now be [{summonerId championId spellIds championName summonerName ddlink spellLinks} ... ]
+
       # make list of summonernames with champnames
       summoners = []
       for i in range(10):
-        summoners.append([gameInformation[i]["summonerName"], gameInformation[i]["ddlink"]])
+        summoners.append([gameInformation[i]["summonerName"], gameInformation[i]["ddlink"], gameInformation[i]["spellLinks"]])
       
       # calculate timePlayed
       ingameTime = (content["gameLength"]/60) + 3
@@ -216,4 +220,4 @@ def updateStatics():
     
   return redirect('/')
 
-webapi.run(port=5000)  
+webapi.run(debug=True, port=5000)  

@@ -32,8 +32,10 @@
   <tr>
   <td><h2 class="text" align="right">{{ summoners[i][0] }}</h2></td><td bgcolor="black">
   <img src={{ summoners[i][1] }}>
-  </td><td>S1</td><td>S2</td>
-  <td>S1</td><td>S2</td><td bgcolor="black">
+  </td><td> 
+  <img src={{ summoners[i][2][0] }}> </td><td> <img src={{ summoners[i][2][1] }}> </td>
+  <td> 
+  <img src={{ summoners[i+5][2][1] }}> </td><td> <img src={{ summoners[i+5][2][0] }}> </td><td bgcolor="black">
   <img src={{ summoners[i+5][1] }}>
   </td><td><h2 class="text">{{ summoners[i+5][0]}}</h2></td>
   </tr>
