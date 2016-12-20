@@ -102,6 +102,10 @@ def printDatabase():
 @webapi.route('/db/shuffle-library')
 def shuffleLibrary():
   global summonerList
+  global alreadySearched
+  if len(alreadySearched) > 0:
+    alreadySearched = []
+    flash("Resetted the already-searched list.")
   flash ("Shuffled library.")
   random.shuffle(summonerList)
   return redirect('/')

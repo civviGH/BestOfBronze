@@ -1,4 +1,5 @@
 display banned champions
 write check, if populating summonr truly is bronze
+make continuing search more efficient
 
 * lookup all summoners at once, fetch data for every ranked game, print overview
