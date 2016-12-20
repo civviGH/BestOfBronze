@@ -1,4 +1,6 @@
-implement summoner spell lookup
-use summoner spell static data to forge image links
 display banned champions
-make the continue button work
+visual overhaul of ingame screen
+rework database. league information is not required
+write function to check for every id in database if player is still bronze4 or lower, else remove him
+
+* lookup all summoners at once, fetch data for every ranked game, print overview

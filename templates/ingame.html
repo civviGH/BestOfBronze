@@ -20,12 +20,12 @@
 <hr class="fancy">
 
 <center>
-<a href="." class="headButton">Continue</a>
+<h3 class="text">To continue search, press F5</h3>
 </center>
 
 <hr class="fancy">
 <center>
-<table border="1">
+<table>
 
 <tr><td colspan="8"><center><h2 class="text">Time Played: {{ ingameTime }} minutes</h2></center> </td> </tr>
 {% for i in range(5) %}
@@ -33,9 +33,10 @@
   <td><h2 class="text" align="right">{{ summoners[i][0] }}</h2></td><td bgcolor="black">
   <img src={{ summoners[i][1] }}>
   </td><td> 
-  <img src={{ summoners[i][2][0] }}> </td><td> <img src={{ summoners[i][2][1] }}> </td>
-  <td> 
-  <img src={{ summoners[i+5][2][1] }}> </td><td> <img src={{ summoners[i+5][2][0] }}> </td><td bgcolor="black">
+  <img src={{ summoners[i][2][0] }}> </td><td style="border-right: 2px solid black"> <img src={{ summoners[i][2][1] }}> </td>
+
+  <td style="border-left: 2px solid black"> 
+  <img src={{ summoners[i+5][2][0] }}> </td><td> <img src={{ summoners[i+5][2][1] }}> </td><td bgcolor="black">
   <img src={{ summoners[i+5][1] }}>
   </td><td><h2 class="text">{{ summoners[i+5][0]}}</h2></td>
   </tr>

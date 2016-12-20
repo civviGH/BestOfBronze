@@ -50,10 +50,6 @@ def populateDatabase():
 
 @webapi.route('/')
 def index(name=None):
-  global alreadySearched
-  if len(alreadySearched) > 0:
-    alreadySearched = []
-    flash("Resetted the already-searched list.")
   return render_template("index.html", name = name)
 
 # webinterface to add players to the database by name
@@ -76,6 +72,8 @@ def addSummonerByName(name=None, tier=None):
 @webapi.route('/db/read-database')
 def readDatabase():
   global summonerList
+  global alreadySearched
+
   # reads the whole database into summonerList: id,tier
   summonerList = []
   with open("SummonerList.txt", "r") as SL:
@@ -86,6 +84,9 @@ def readDatabase():
   # shuffe the list to randomize search order
   random.shuffle(summonerList)
   flash ("Re-read Database entries.")
+  if len(alreadySearched) > 0:
+    alreadySearched = []
+    flash("Resetted the already-searched list.")
   return redirect('/')
 
 @webapi.route('/db/print-database')
@@ -126,8 +127,6 @@ def findGame():
     summonerId = int(summoner[:summoner.find(",")])
     print("Looking for <{}>".format(str(summonerId)))
     if (summonerId in alreadySearched):
-      print("Already looked for it.")
-      print("---")
       continue
     else:
       alreadySearched.append(summonerId)
@@ -158,6 +157,9 @@ def findGame():
       print("Looking up names of the players.")
       sleep(0.5)
       gameInformation = getSummonerNames(gameInformation)
+      if gameInformation == "":
+        flash("Failed to retrieve Summoner Names. Bad API request.")
+        return redirect('/')
       # should now be [{summonerId championId spellIds summonerName} ... ]
 
       # get champion names
