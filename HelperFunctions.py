@@ -1,6 +1,7 @@
 import requests
 import json
 import requests.packages.urllib3
+import sys
 from time import sleep
 requests.packages.urllib3.disable_warnings()
 
@@ -220,7 +221,11 @@ def forgeSummonerSpellLinks(gameInformation):
   return gameInformation
 
 def getDataDragonVersion():
-  response = requests.get("https://ddragon.leagueoflegends.com/api/versions.json")
+  try:
+    response = requests.get("https://ddragon.leagueoflegends.com/api/versions.json")
+  except:
+    print("SSL Error. Riots Certificate is not up to date.")
+  return None
   content = json.loads(response.text)
   return str(content[0])
   

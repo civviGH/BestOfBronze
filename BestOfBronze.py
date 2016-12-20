@@ -25,6 +25,16 @@ except:
   print("Start again to use empty database.")
   foo = open("SummonerList.txt", "w+")
   sys.exit()
+  
+# check if config exists. if not, create an empty one
+try:
+  with open("config.json", "r") as data_file:
+    pass
+except:
+  print("Did not find config file. Creating empty one.")
+  print("Please fill in the App-Folder, App-Version and API-Key.")
+  config = {}
+  config["data-dragon-version"]
 # shuffe the list to randomize search order
 random.shuffle(summonerList)
 
@@ -184,6 +194,9 @@ def findGame():
 def updateStatics():
   # get data dragon version once, pass it into other getters
   ddv = getDataDragonVersion()
+  if not ddv:
+    flash('Riot certificate not valid.')
+    return redirect('/')
   fails = 0
   answer = getChampionStatics(ddv)
   if answer:
