@@ -1,5 +1,6 @@
 display banned champions
 write check, if populating summonr truly is bronze
 make continuing search more efficient
+show keystone masteries
 
 * lookup all summoners at once, fetch data for every ranked game, print overview
