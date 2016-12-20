@@ -92,11 +92,8 @@ def readDatabase():
 @webapi.route('/db/print-database')
 def printDatabase():
   global summonerList
-  tmp = ""
-  # concatenate database and print as huge string
-  for summoner in summonerList:
-    tmp = tmp + summoner + "<br>"
-  return tmp
+  flash('{} players found in database'.format(len(summonerList)))
+  return redirect('/')
   
 # shuffle library for whatever reason
 @webapi.route('/db/shuffle-library')
@@ -116,7 +113,7 @@ def findGame():
     try:
       timePlayed = int(timePlayed)
       if timePlayed < 0:
-        flash("U should not look for game with negative playing time.")
+        flash("You should not look for games with negative playing time.")
         return redirect('/')
     except:
       flash("Time played has to be an integer.")
@@ -174,6 +171,9 @@ def findGame():
       # forge data dragon links for summoner spells
       gameInformation = forgeSummonerSpellLinks(gameInformation)
       # should now be [{summonerId championId spellIds championName summonerName ddlink spellLinks} ... ]
+    
+      # forge spectator code
+      spectatorString = forgeSpectatorString(content)
 
       # make list of summonernames with champnames
       summoners = []
@@ -185,7 +185,7 @@ def findGame():
       
       # if someone is ingame, print template for match view
       print("Rendering template")
-      return render_template("ingame.html", summoners = summoners, ingameTime = ingameTime)
+      return render_template("ingame.html", summoners = summoners, ingameTime = ingameTime, spectatorString = spectatorString)
 
   # if no one is ingame, go back to index
   flash('Did not find anyone ingame with given search parameters.')

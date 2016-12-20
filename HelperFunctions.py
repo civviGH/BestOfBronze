@@ -223,3 +223,21 @@ def getBronzePlayers(league):
     if entry["division"] == "V":
       playerList.append(entry["playerOrTeamId"])
   return playerList
+
+def forgeSpectatorString(content):
+  spectatorString = ""
+  
+  with open("config.json") as data_file:
+    config = json.load(data_file)
+
+  spectatorString = spectatorString + "\"" + config["app-folder"] + "League of Legends\\RADS\\solutions\\lol_game_client_sln\\releases\\" + config["app-version"] + "\\deploy\\League of Legends.exe\""
+
+  spectatorString = spectatorString + " 8394 LoLLauncher.exe \"\" \"spectator spectator.euw1.lol.riotgames.com:80"
+
+  spectatorString = spectatorString + " " + content["observers"]["encryptionKey"]
+
+  spectatorString = spectatorString + " " + str(content["gameId"])
+
+  spectatorString = spectatorString + " EUW1\""
+  return spectatorString
+  

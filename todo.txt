@@ -1,5 +1,4 @@
 display banned champions
-visual overhaul of ingame screen
 rework database. league information is not required
 write function to check for every id in database if player is still bronze4 or lower, else remove him
 
