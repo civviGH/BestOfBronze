@@ -1,6 +1,7 @@
 import requests
 import json
 import requests.packages.urllib3
+from time import sleep
 requests.packages.urllib3.disable_warnings()
 
 from pprint import pprint
@@ -43,12 +44,15 @@ def checkForHighElo():
     for j in range(i*10, (i+1)*10):
       listToCheck.append(summonerList[j][:-1])
     summonersToDelete = summonersToDelete + checkIfStillBronze(listToCheck)
+    sleep(1.5)
   listToCheck = []
   for i in range(blocksOfTen*10, len(summonerList)):
     listToCheck.append(summonerList[i][:-1])
   summonersToDelete = summonersToDelete + checkIfStillBronze(listToCheck)
   for summoner in summonersToDelete:
     removeSummoner(summoner)
+  print("Removed Ids:")
+  print(summonersToDelete)
   return len(summonersToDelete)
 
 def checkIfStillBronze(listToCheck):
@@ -61,7 +65,7 @@ def checkIfStillBronze(listToCheck):
   response = requests.get("https://euw.api.pvp.net/api/lol/euw/v2.5/league/by-summoner/" + listOfIds[:-1] + "/entry?api_key=" + config["api-key"])
   if response.status_code != 200:
     print("Bad Riot API request.")
-    return None
+    return []
   content = json.loads(response.text)
   for key,value in content.iteritems():
     for league in value:
@@ -265,7 +269,7 @@ def forgeSpectatorString(content):
 
   spectatorString = spectatorString + "\"" + config["app-folder"] + "League of Legends\\RADS\\solutions\\lol_game_client_sln\\releases\\" + config["app-version"] + "\\deploy\\League of Legends.exe\""
 
-  spectatorString = spectatorString + " 8394 LoLLauncher.exe \"\" \"spectator spectator.euw1.lol.riotgames.com:80"
+  spectatorString = spectatorString + " \"8394\" \"LoLLauncher.exe\" \"\" \"spectator spectator.euw1.lol.riotgames.com:80"
 
   spectatorString = spectatorString + " " + content["observers"]["encryptionKey"]
 

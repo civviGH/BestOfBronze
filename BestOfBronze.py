@@ -1,9 +1,11 @@
 import random
 import json
 import sys
+import pyperclip
 from HelperFunctions import *
 from time import sleep
 from flask import Flask, flash, redirect, render_template, request
+from Tkinter import Tk
 
 from pprint import pprint
 
@@ -155,8 +157,9 @@ def findGame():
       gameInformation = forgeSummonerSpellLinks(gameInformation)
       # should now be [{summonerId championId spellIds championName summonerName ddlink spellLinks} ... ]
     
-      # forge spectator code
+      # forge spectator code, copy it to clipboard
       spectatorString = forgeSpectatorString(content)
+      pyperclip.copy(spectatorString)
 
       # make list of summonernames with champnames
       summoners = []
@@ -168,7 +171,7 @@ def findGame():
       
       # if someone is ingame, print template for match view
       print("Rendering template")
-      return render_template("ingame.html", summoners = summoners, ingameTime = ingameTime, spectatorString = spectatorString)
+      return render_template("ingame.html", summoners = summoners, ingameTime = ingameTime)
 
   # if no one is ingame, go back to index
   flash('Did not find anyone ingame with given search parameters.')
