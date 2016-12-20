@@ -203,7 +203,7 @@ def updateStatics():
   # get data dragon version once, pass it into other getters
   ddv = getDataDragonVersion()
   if not ddv:
-    flash('Riot certificate not valid.')
+    flash('Could not retrieve data dragon version.')
     return redirect('/')
   fails = 0
   answer = getChampionStatics(ddv)
@@ -229,8 +229,8 @@ def updateStatics():
     
   return redirect('/')
 
-@webapi.route('/test')
-def test():
+@webapi.route('/db/cleanse')
+def cleanseDatabase():
   hits = checkForHighElo()
   flash('Removed {} high elo player(s) from database.'.format(hits))
   return redirect('/')

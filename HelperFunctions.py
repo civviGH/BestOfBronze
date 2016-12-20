@@ -222,10 +222,10 @@ def forgeSummonerSpellLinks(gameInformation):
 
 def getDataDragonVersion():
   try:
-    response = requests.get("https://ddragon.leagueoflegends.com/api/versions.json")
+    response = requests.get("http://ddragon.leagueoflegends.com/api/versions.json")
   except:
-    print("SSL Error. Riots Certificate is not up to date.")
-  return None
+    print("Could not retrieve data dragon version.")
+    return None
   content = json.loads(response.text)
   return str(content[0])
   
