@@ -5,9 +5,9 @@ requests.packages.urllib3.disable_warnings()
 
 from pprint import pprint
 
-def addSummonerToList(summonerId, tier):
+def addSummonerToList(summonerId):
   with open("SummonerList.txt", "a") as SummonerList:
-    SummonerList.write(str(summonerId) + "," + tier + "\n")
+    SummonerList.write(str(summonerId) + "\n")
 
 def clearSummonerList():
   open("SummonerList.txt", "w").close()
@@ -15,7 +15,7 @@ def clearSummonerList():
 def checkIfSummonerExists(summonerId):
   with open("SummonerList.txt", "r") as SummonerList:
     for line in SummonerList:
-      if line[:line.find(",")] == str(summonerId):
+      if line[:-1] == str(summonerId):
         return True
     return False  
 
@@ -24,20 +24,53 @@ def removeSummoner(summonerId):
   content = SummonerList.readlines()
   SummonerList.seek(0)
   for line in content:
-    if line[:line.find(",")] != str(summonerId):
+    if line[:-1] != str(summonerId):
       SummonerList.write(line)
   SummonerList.truncate()
   SummonerList.close()
 
 def checkForHighElo():
-  SummonerList = open("SummonerList.txt", "r+")
-  content = SummonerList.readlines()
-  SummonerList.seek(0)
-  for line in content:
-    if line[line.find(",")+1:] == "B5\n" or  line[line.find(",")+1:] == "B4\n":
-      SummonerList.write(line)
-  SummonerList.truncate()
-  SummonerList.close()
+  summonerList = []
+  summonersToDelete = []
+  blocksOfTen = 0
+  with open("SummonerList.txt", "r") as content:
+    for summoner in content:
+      summonerList.append(summoner)
+  blocksOfTen = len(summonerList)/10
+
+  for i in range(blocksOfTen):
+    listToCheck = []
+    for j in range(i*10, (i+1)*10):
+      listToCheck.append(summonerList[j][:-1])
+    summonersToDelete = summonersToDelete + checkIfStillBronze(listToCheck)
+  listToCheck = []
+  for i in range(blocksOfTen*10, len(summonerList)):
+    listToCheck.append(summonerList[i][:-1])
+  summonersToDelete = summonersToDelete + checkIfStillBronze(listToCheck)
+  for summoner in summonersToDelete:
+    removeSummoner(summoner)
+  return len(summonersToDelete)
+
+def checkIfStillBronze(listToCheck):
+  listOfIds = ""
+  deleteSummoners = []
+  with open('config.json') as data_file:
+    config = json.load(data_file)
+  for summoner in listToCheck:
+    listOfIds = listOfIds + str(summoner) + ","
+  response = requests.get("https://euw.api.pvp.net/api/lol/euw/v2.5/league/by-summoner/" + listOfIds[:-1] + "/entry?api_key=" + config["api-key"])
+  if response.status_code != 200:
+    print("Bad Riot API request.")
+    return None
+  content = json.loads(response.text)
+  for key,value in content.iteritems():
+    for league in value:
+      if league["queue"] == "RANKED_SOLO_5x5":
+        if league["tier"] != "BRONZE":
+          deleteSummoners.append(key)
+        elif (league["entries"][0]["division"] != "V") and (league["entries"][0]["division"] != "IV"):
+          deleteSummoners.append(key)
+  return deleteSummoners
 
 def checkIfIngame(summonerId, timePlayed):
   with open('config.json') as data_file:

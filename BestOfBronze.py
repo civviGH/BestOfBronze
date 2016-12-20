@@ -19,7 +19,7 @@ try:
       # line[:-1] cuts out the \n appendix
       summonerList.append(line[:-1])
 except:
-  print("Did not find a database. Creating an empty one. Please add one summoner by hand and then migrate.")
+  print("Did not find a database. Creating an empty one. Please add summoners by using populate function.")
   print("Start again to use empty database.")
   foo = open("SummonerList.txt", "w+")
   sys.exit()
@@ -44,30 +44,13 @@ def populateDatabase():
   for id in listOfSummoners:
     if not checkIfSummonerExists(id):
       added += 1
-      addSummonerToList(id, "B5")
+      addSummonerToList(id)
   flash("Added {} new players to the database.".format(str(added)))
   return redirect('/')
 
 @webapi.route('/')
 def index(name=None):
   return render_template("index.html", name = name)
-
-# webinterface to add players to the database by name
-@webapi.route('/action/addSummonerByName')
-def addSummonerByName(name=None, tier=None):
-  name = request.args.get("name")
-  tier = request.args.get("tier")
-  # get summoner id from name
-  summonerId = getSummonerIdByName(name)
-  if (summonerId == 0) or (tier is None):
-    flash("Failed to request Id or tier is not specified.")
-  else:
-    if checkIfSummonerExists(summonerId):
-      flash("{} already found in database.".format(name))
-      return redirect('/')
-    flash("Added {} in tier {} to database.".format(name, tier))
-    addSummonerToList(summonerId, tier)
-  return redirect('/')
 
 @webapi.route('/db/read-database')
 def readDatabase():
@@ -121,7 +104,7 @@ def findGame():
   else:
     timePlayed = 0
   for summoner in summonerList:
-    summonerId = int(summoner[:summoner.find(",")])
+    summonerId = int(summoner)
     print("Looking for <{}>".format(str(summonerId)))
     if (summonerId in alreadySearched):
       continue
@@ -220,6 +203,12 @@ def updateStatics():
   with open("config.json", "w") as data_file:
     json.dump(config, data_file)
     
+  return redirect('/')
+
+@webapi.route('/test')
+def test():
+  hits = checkForHighElo()
+  flash('Removed {} high elo player(s) from database.'.format(hits))
   return redirect('/')
 
 webapi.run(debug=True, port=5000)  

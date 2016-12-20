@@ -36,22 +36,6 @@
 
 <hr class="fancy">
 
-<center> <h1 class="text">Add summoner to database by name</h1></center>
-<center>
-<form action="/action/addSummonerByName" method="get">
-  <table>
-  <tr>
-  <td><div class="text">Summoner Name</div></td><td><div class="text">League (e.g B5)</div></td><td rowspan="2"> <input type="submit" class="headButton"/> </td> 
-  </tr>
-  <tr>
-  <td> <input type="text" name="name"/></td><td> <input type="text" name="tier"/></td>
-  </tr>
-  </table>
-</form>
-</center>
-
-<hr class="fancy">
-
 <h2 class="text"> Messages: </h2>
 {% with messages = get_flashed_messages() %}
   {% if messages %}

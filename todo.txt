@@ -1,5 +1,4 @@
 display banned champions
-rework database. league information is not required
-write function to check for every id in database if player is still bronze4 or lower, else remove him
+write check, if populating summonr truly is bronze
 
 * lookup all summoners at once, fetch data for every ranked game, print overview
