@@ -42,6 +42,7 @@ except:
   config["app-version"] = ""
   with open("config.json", "w") as data_file:
     json.dump(config, data_file)
+  sys.exit()
 # shuffe the list to randomize search order
 random.shuffle(summonerList)
 
