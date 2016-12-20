@@ -23,6 +23,7 @@ try:
 except:
   print("Did not find a database. Creating an empty one. Please add summoners by using populate function.")
   print("Start again to use empty database.")
+  print("Dont forget ")
   foo = open("SummonerList.txt", "w+")
   sys.exit()
   
@@ -34,7 +35,13 @@ except:
   print("Did not find config file. Creating empty one.")
   print("Please fill in the App-Folder, App-Version and API-Key.")
   config = {}
-  config["data-dragon-version"]
+  config["data-dragon-version"] = ""
+  config["app-folder"] = ""
+  config["api-key"] = ""
+  config["ranked-queues"] = [440, 420]
+  config["app-version"] = ""
+  with open("config.json", "w") as data_file:
+    json.dump(config, data_file)
 # shuffe the list to randomize search order
 random.shuffle(summonerList)
 
