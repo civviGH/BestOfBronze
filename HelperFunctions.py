@@ -88,18 +88,14 @@ def checkIfIngame(summonerId, timePlayed, soloOnly):
     content = json.loads(response.text)
     if content["gameType"] == "CUSTOM_GAME":
       return False
-    if soloOnly:
-      if content["gameQueueConfigId"] == 420:
-        if (timePlayed == 0) or (content["gameLength"] + 3 <= timePlayed*60.0):
-          return True
-        else:
-          print("Found a ranked game, but time played is too high. <{}>".format(str((content["gameLength"]/60) + 3)))      
-    else:
-      if content["gameQueueConfigId"] in rankedQueues:
-        if (timePlayed == 0) or (content["gameLength"] + 3 <= timePlayed*60.0):
-          return True
-        else:
-          print("Found a ranked game, but time played is too high. <{}>".format(str((content["gameLength"]/60) + 3)))      
+    if content["gameQueueConfigId"] in rankedQueues:
+      if soloOnly and (content["gameQueueConfigId"] != 420):
+        print("Found a ranked game, but it was Flex Queue.")
+        return False
+      if (timePlayed == 0) or (content["gameLength"] + 3 <= timePlayed*60.0):
+        return True
+      else:
+        print("Found a ranked game, but time played is too high. <{}>".format(str((content["gameLength"]/60) + 3)))      
   return False
 
 def giveGameData(summonerId):
@@ -254,7 +250,7 @@ def getSummonerSpellStatics(ddv):
     return None
   return "Did not fetch summoner spells static data. Return code was " + str(response.status_code + ".")
   
-def etLeagueEntryById(summonerId):
+def getLeagueEntryById(summonerId):
   with open("config.json") as data_file:
     config = json.load(data_file)
   response = requests.get("https://euw.api.pvp.net/api/lol/euw/v2.5/league/by-summoner/" + str(summonerId) + "?api_key=" + config["api-key"])
