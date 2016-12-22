@@ -77,7 +77,7 @@ def checkIfStillBronze(listToCheck):
           deleteSummoners.append(key)
   return deleteSummoners
 
-def checkIfIngame(summonerId, timePlayed):
+def checkIfIngame(summonerId, timePlayed, soloOnly):
   with open('config.json') as data_file:
     config = json.load(data_file)
     rankedQueues = config["ranked-queues"]
@@ -88,11 +88,18 @@ def checkIfIngame(summonerId, timePlayed):
     content = json.loads(response.text)
     if content["gameType"] == "CUSTOM_GAME":
       return False
-    if content["gameQueueConfigId"] in rankedQueues:
-      if (timePlayed == 0) or (content["gameLength"] + 3 <= timePlayed*60.0):
-        return True
-      else:
-        print("Found a ranked game, but time played is too high. <{}>".format(str((content["gameLength"]/60) + 3)))      
+    if soloOnly:
+      if content["gameQueueConfigId"] == 420:
+        if (timePlayed == 0) or (content["gameLength"] + 3 <= timePlayed*60.0):
+          return True
+        else:
+          print("Found a ranked game, but time played is too high. <{}>".format(str((content["gameLength"]/60) + 3)))      
+    else:
+      if content["gameQueueConfigId"] in rankedQueues:
+        if (timePlayed == 0) or (content["gameLength"] + 3 <= timePlayed*60.0):
+          return True
+        else:
+          print("Found a ranked game, but time played is too high. <{}>".format(str((content["gameLength"]/60) + 3)))      
   return False
 
 def giveGameData(summonerId):
@@ -247,7 +254,7 @@ def getSummonerSpellStatics(ddv):
     return None
   return "Did not fetch summoner spells static data. Return code was " + str(response.status_code + ".")
   
-def getLeagueEntryById(summonerId):
+def etLeagueEntryById(summonerId):
   with open("config.json") as data_file:
     config = json.load(data_file)
   response = requests.get("https://euw.api.pvp.net/api/lol/euw/v2.5/league/by-summoner/" + str(summonerId) + "?api_key=" + config["api-key"])
@@ -255,7 +262,7 @@ def getLeagueEntryById(summonerId):
     return None
   content = json.loads(response.text)
   for league in content[str(summonerId)]:
-    if league["queue"] == "RANKED_SOLO_5x5":
+    if (league["queue"] == "RANKED_SOLO_5x5") and (league["tier"] == "BRONZE"):
       return league["entries"]
   return None
   

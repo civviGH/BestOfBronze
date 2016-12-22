@@ -55,11 +55,13 @@ def populateDatabase():
   summonerName = request.args.get("summonerName")
   summonerName = summonerName.replace(" ","")
   summonerId = getSummonerIdByName(summonerName)
-  print(summonerId)
   if summonerId == 0:
     flash("Failed to request Id from Riot API.")
     return redirect('/')
   league = getLeagueEntryById(summonerId)
+  if not league:
+    flash*("Error requesting league entries. Is the player really bronze?")
+    return redirect('/')
   listOfSummoners = getBronzePlayers(league)
   for id in listOfSummoners:
     if not checkIfSummonerExists(id):
@@ -135,9 +137,16 @@ def findGame():
     else:
       alreadySearched.append(summonerId)
       
+    # check if only soloq games should be looked up
+    soloOnly = request.args.get("soloOnly")
+    if soloOnly == "True":
+      soloOnly = True
+    else:
+      soloOnly = False
+  
     # sleeps are added to ensure the maximum number of api calls does not exceed limits
     sleep(1.5)
-    if checkIfIngame(summonerId, timePlayed):
+    if checkIfIngame(summonerId, timePlayed, soloOnly):
       print("Found a ranked game of id <{}>".format(summonerId))
 
       # get game data
