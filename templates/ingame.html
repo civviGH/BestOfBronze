@@ -27,9 +27,10 @@
 <center>
 <table>
 
-<tr><td colspan="8"><center><h2 class="text">Time Played: {{ ingameTime }} minutes</h2></center> </td> </tr>
+<tr><td colspan="10"><center><h2 class="text">Time Played: {{ ingameTime }} minutes</h2></center> </td> </tr>
 {% for i in range(5) %}
   <tr>
+  <td><div class="text"></div>fav button</td>
   <td><h2 class="text" align="right">{{ summoners[i][0] }}</h2></td><td bgcolor="black">
   <img src={{ summoners[i][1] }}>
   </td><td> 
@@ -39,10 +40,17 @@
   <img src={{ summoners[i+5][2][0] }}> </td><td> <img src={{ summoners[i+5][2][1] }}> </td><td bgcolor="black">
   <img src={{ summoners[i+5][1] }}>
   </td><td><h2 class="text">{{ summoners[i+5][0]}}</h2></td>
+  <td><div class="text"></div>fav button</td>
   </tr>
 {% endfor %}
 </table>
-<h3 class="text">The spectator string is in your clipboard.</h3>
+<hr class="fancy">
+<h3 class="text">The spectator string is also in your clipboard.</h3>
+<form>
+<div style="padding: 0.5em">
+<input type="text" onClick="this.select();" value ="{{ spectatorString }}" style="width: 100%" readonly>
+</div>
+</form>
 </center>
 
 <hr class="fancy">

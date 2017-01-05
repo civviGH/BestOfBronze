@@ -202,7 +202,7 @@ def findGame():
       
       # if someone is ingame, print template for match view
       print("Rendering template")
-      return render_template("ingame.html", summoners = summoners, ingameTime = ingameTime)
+      return render_template("ingame.html", summoners = summoners, ingameTime = ingameTime, spectatorString = spectatorString)
 
   # if no one is ingame, go back to index
   flash('Did not find anyone ingame with given search parameters.')
@@ -248,4 +248,7 @@ def cleanseDatabase():
   flash('Removed {} high elo player(s) from database.'.format(hits))
   return redirect('/')
 
+@webapi.route('/db/addFav/<string:summonerId>')
+def addFavorite(summonerId):
+  return summonerId
 webapi.run(debug=True, port=5000)  
