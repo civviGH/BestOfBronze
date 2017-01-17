@@ -30,17 +30,17 @@
 <tr><td colspan="10"><center><h2 class="text">Time Played: {{ ingameTime }} minutes</h2></center> </td> </tr>
 {% for i in range(5) %}
   <tr>
-  <td><div class="text"></div>fav button</td>
-  <td><h2 class="text" align="right">{{ summoners[i][0] }}</h2></td><td bgcolor="black">
-  <img src={{ summoners[i][1] }}>
+  <td><div class="text"></div>{{ summoners[i]["summonerId"] }}</td>
+  <td><h2 class="text" align="right">{{ summoners[i]["summonerName"] }}</h2></td><td bgcolor="black">
+  <img src={{ summoners[i]["ddlink"] }}>
   </td><td> 
-  <img src={{ summoners[i][2][0] }}> </td><td style="border-right: 2px solid black"> <img src={{ summoners[i][2][1] }}> </td>
+  <img src={{ summoners[i]["spellLinks"][0] }}> </td><td style="border-right: 2px solid black"> <img src={{ summoners[i]["spellLinks"][1] }}> </td>
 
   <td style="border-left: 2px solid black"> 
-  <img src={{ summoners[i+5][2][0] }}> </td><td> <img src={{ summoners[i+5][2][1] }}> </td><td bgcolor="black">
-  <img src={{ summoners[i+5][1] }}>
-  </td><td><h2 class="text">{{ summoners[i+5][0]}}</h2></td>
-  <td><div class="text"></div>fav button</td>
+  <img src={{ summoners[i+5]["spellLinks"][0] }}> </td><td> <img src={{ summoners[i+5]["spellLinks"][1] }}> </td><td bgcolor="black">
+  <img src={{ summoners[i+5]["ddlink"] }}>
+  </td><td><h2 class="text">{{ summoners[i+5]["summonerName"]}}</h2></td>
+  <td><div class="text"></div>{{ summoners[i+5]["summonerId"] }}</td>
   </tr>
 {% endfor %}
 </table>

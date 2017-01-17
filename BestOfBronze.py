@@ -13,8 +13,10 @@ webapi = Flask(__name__)
 webapi.secret_key = 'bestofbronze_secret'
 
 # start by reading database once
-# reads the whole database into summonerList: id,tier
+# reads the whole database into summonerList
 summonerList = []
+FavoriteList = []
+
 try:
   with open("SummonerList.txt", "r") as SL:
     for line in SL:
@@ -23,9 +25,19 @@ try:
 except:
   print("Did not find a database. Creating an empty one. Please add summoners by using populate function.")
   print("Start again to use empty database.")
-  print("Dont forget ")
   foo = open("SummonerList.txt", "w+")
+  foo.close()
   sys.exit()
+try:
+  with open("FavoriteList.txt", "r") as FL:
+    for line in FL:
+      # line[:-1] cuts out the \n appendix
+      FavoriteList.append(line[:-1])
+except:
+  print("Did not find a Favorite Database. Created One.")
+  foo = open("FavoriteList.txt", "w+")
+  foo.close()
+  
   
 # check if config exists. if not, create an empty one
 try:
@@ -131,10 +143,10 @@ def findGame():
     timePlayed = 0
   for summoner in summonerList:
     summonerId = int(summoner)
-    print("Looking for <{}>".format(str(summonerId)))
     if (summonerId in alreadySearched):
       continue
     else:
+      print("Looking for <{}>".format(str(summonerId)))
       alreadySearched.append(summonerId)
       
     # check if only soloq games should be looked up
@@ -195,7 +207,12 @@ def findGame():
       # make list of summonernames with champnames
       summoners = []
       for i in range(10):
-        summoners.append([gameInformation[i]["summonerName"], gameInformation[i]["ddlink"], gameInformation[i]["spellLinks"]])
+        summoner = {}
+        summoner["summonerName"] = gameInformation[i]["summonerName"]
+        summoner["ddlink"] = gameInformation[i]["ddlink"]
+        summoner["spellLinks"] = gameInformation[i]["spellLinks"]
+        summoner["summonerId"] = gameInformation[i]["summonerId"]
+        summoners.append(summoner)
       
       # calculate timePlayed
       ingameTime = (content["gameLength"]/60) + 3

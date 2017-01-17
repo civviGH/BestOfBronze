@@ -2,5 +2,8 @@ display banned champions
 make continuing search more efficient
 show keystone masteries
 show average winrate in teams
+add favorite database and buttons
+add support for multiple api keys to speed up the search
+lookup league version dynamically
 
 * lookup all summoners at once, fetch data for every ranked game, print overview
