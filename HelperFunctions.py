@@ -21,6 +21,13 @@ def checkIfSummonerExists(summonerId):
         return True
     return False  
 
+def checkIfSummonerIsFavorite(summonerId):
+  with open("FavoriteList.txt", "r") as FavoriteList:
+    for line in FavoriteList:
+      if line[:-1] == str(summonerId):
+        return True
+    return False  
+
 def removeSummoner(summonerId):
   SummonerList = open("SummonerList.txt", "r+")
   content = SummonerList.readlines()

@@ -15,7 +15,7 @@ webapi.secret_key = 'bestofbronze_secret'
 # start by reading database once
 # reads the whole database into summonerList
 summonerList = []
-FavoriteList = []
+favoriteList = []
 
 try:
   with open("SummonerList.txt", "r") as SL:
@@ -32,7 +32,7 @@ try:
   with open("FavoriteList.txt", "r") as FL:
     for line in FL:
       # line[:-1] cuts out the \n appendix
-      FavoriteList.append(line[:-1])
+      favoriteList.append(line[:-1])
 except:
   print("Did not find a Favorite Database. Created One.")
   foo = open("FavoriteList.txt", "w+")
@@ -212,6 +212,10 @@ def findGame():
         summoner["ddlink"] = gameInformation[i]["ddlink"]
         summoner["spellLinks"] = gameInformation[i]["spellLinks"]
         summoner["summonerId"] = gameInformation[i]["summonerId"]
+        if checkIfSummonerIsFavorite(summoner["summonerId"]):
+          summoner["favorite"] = True
+        else:
+          summoner["favorite"] = False
         summoners.append(summoner)
       
       # calculate timePlayed
@@ -227,6 +231,9 @@ def findGame():
   alreadySearched = []
   return redirect('/')
 
+@webapi.route('/db/addFav/<string:summonerId>')
+  if checkIfSummonerIsFavorite(summonerId):
+    
   
 @webapi.route('/static/update')
 def updateStatics():
